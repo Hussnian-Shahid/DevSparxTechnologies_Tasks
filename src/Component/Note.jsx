@@ -25,7 +25,7 @@ const Navbar = memo(({ searchQuery, onSearchChange }) => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="flex items-center">
-                <div className="bg-blue-500 rounded-lg p-1 mr-2">
+                <div className="bg-[#118EFD] rounded-lg p-1 mr-2">
                   <span className="h-7 w-7 flex items-center justify-center text-white font-bold text-xl">
                     <img src="/logo1.png" alt="" />
                   </span>
