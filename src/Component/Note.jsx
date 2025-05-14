@@ -26,8 +26,8 @@ const Navbar = memo(({ searchQuery, onSearchChange }) => {
             <div className="flex-shrink-0">
               <div className="flex items-center">
                 <div className="bg-blue-500 rounded-lg p-1 mr-2">
-                  <span className="h-8 w-8 flex items-center justify-center text-white font-bold text-xl">
-                    <img src="logo1.png" alt="" />
+                  <span className="h-7 w-7 flex items-center justify-center text-white font-bold text-xl">
+                    <img src="/logo1.png" alt="" />
                   </span>
                 </div>
                 <span className="font-bold text-xl text-white hidden sm:block">
