@@ -223,7 +223,11 @@ const Note = () => {
 
     // Filter by category
     if (selectedCategory !== "All") {
-      filtered = filtered.filter((note) => note.category === selectedCategory);
+      filtered = filtered.filter(
+        (note) =>
+          note.category === selectedCategory ||
+          (selectedCategory === "Uncategorized" && !note.category)
+      );
     }
 
     setFilteredNotes(filtered);
@@ -250,6 +254,9 @@ const Note = () => {
       return;
     }
 
+    const categoryToSave =
+      selectedCategory === "All" ? "Uncategorized" : selectedCategory;
+
     const newNote = {
       id: Date.now(),
       title,
@@ -258,7 +265,7 @@ const Note = () => {
       timestamp: new Date().toLocaleString(),
       image: selectedImage,
       video: selectedVideo,
-      category: selectedCategory === "All" ? "Uncategorized" : selectedCategory,
+      category: categoryToSave,
     };
 
     setNotes([newNote, ...notes]);
@@ -375,9 +382,16 @@ const Note = () => {
   ]);
 
   const handleAddCategory = useCallback(() => {
-    if (newCategory.trim() !== "" && !categories.includes(newCategory.trim())) {
-      setCategories((prev) => [...prev, newCategory.trim()]);
-      setSelectedCategory(newCategory.trim());
+    const trimmedCategory = newCategory.trim();
+    if (trimmedCategory && !categories.includes(trimmedCategory)) {
+      setCategories((prev) => {
+        const newCategories = [...prev];
+        if (!newCategories.includes(trimmedCategory)) {
+          newCategories.push(trimmedCategory);
+        }
+        return newCategories;
+      });
+      setSelectedCategory(trimmedCategory);
       setNewCategory("");
       setShowAddCategory(false);
     }
@@ -397,7 +411,10 @@ const Note = () => {
 
   const toggleAddCategory = useCallback(() => {
     setShowAddCategory((prev) => !prev);
-  }, []);
+    if (!showAddCategory) {
+      setNewCategory("");
+    }
+  }, [showAddCategory]);
 
   const truncateText = useCallback((text, lines = 2) => {
     if (!text) return "";
@@ -441,19 +458,36 @@ const Note = () => {
               <div className="ml-2 flex items-center bg-black bg-opacity-30 rounded-full px-3 py-1">
                 <Tag size={14} className="mr-1 text-gray-300" />
                 <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  value={
+                    selectedCategory === "All"
+                      ? "Uncategorized"
+                      : selectedCategory
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSelectedCategory(
+                      value === "Uncategorized" ? "All" : value
+                    );
+                  }}
                   className="bg-transparent border-none outline-none text-sm text-gray-300"
                 >
-                  {categories.map((category, index) => (
-                    <option
-                      key={index}
-                      value={category}
-                      className="bg-gray-800 text-white"
-                    >
-                      {category}
-                    </option>
-                  ))}
+                  <option
+                    value="Uncategorized"
+                    className="bg-gray-800 text-white"
+                  >
+                    Uncategorized
+                  </option>
+                  {categories
+                    .filter((cat) => cat !== "All")
+                    .map((category, index) => (
+                      <option
+                        key={index}
+                        value={category}
+                        className="bg-gray-800 text-white"
+                      >
+                        {category}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
